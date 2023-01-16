@@ -1,7 +1,8 @@
 const express = require('express');
-const fs = require('fs');
+// const fs = require('fs');
+const { readTalkersData } = require('./utilities/fsUtilities');
 
-const talkersPath = `${__dirname}/talker.json`;
+// const talkersPath = `${__dirname}/talker.json`;
 
 const app = express();
 app.use(express.json());
@@ -15,11 +16,12 @@ app.get('/', (_request, response) => {
 });
 
 app.get('/talker', async (_req, res) => {
-  const data = fs.readFileSync(talkersPath);
-  const talkers = await JSON.parse(data);
-  if (!talkers) {
-    return [];
-  }
+  // const data = fs.readFileSync(talkersPath);
+  // const talkers = await JSON.parse(data);
+  // if (!talkers) {
+  //   return [];
+  // }
+  const talkers = await readTalkersData();
   return res.status(200).send(talkers);
 });
 
