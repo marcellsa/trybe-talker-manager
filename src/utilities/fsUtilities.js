@@ -1,17 +1,13 @@
-const fs = require('fs').promises;
-const path = require('path');
+const fs = require('fs');
 
-const readTalkersData = async () => {
+const readFile = async (path) => {
   try {
-    const data = await fs.readFile(path.resolve(__dirname, '../talker.json'));
-    const talkersData = JSON.parse(data);
-    // console.log(talkers);
-    return talkersData;
+    return JSON.parse(fs.readFileSync(path));
   } catch (error) {
     return [];
   }
 };
 
 module.exports = {
-  readTalkersData,
+  readFile,
 };

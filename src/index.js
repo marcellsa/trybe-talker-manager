@@ -1,8 +1,7 @@
 const express = require('express');
-// const fs = require('fs');
-const { readTalkersData } = require('./utilities/fsUtilities');
+const { readFile } = require('./utilities/fsUtilities');
 
-// const talkersPath = `${__dirname}/talker.json`;
+const PATH = './src/talker.json';
 
 const app = express();
 app.use(express.json());
@@ -16,23 +15,18 @@ app.get('/', (_request, response) => {
 });
 
 app.get('/talker', async (_req, res) => {
-  // const data = fs.readFileSync(talkersPath);
-  // const talkers = await JSON.parse(data);
-  // if (!talkers) {
-  //   return [];
-  // }
-  const talkers = await readTalkersData();
-  return res.status(200).send(talkers);
+  const talkers = await readFile(PATH);
+  return res.status(200).json(talkers);
 });
 
 app.get('/talker/:id', async (req, res) => {
   const { id } = req.params;
-  const talkers = await readTalkersData();
+  const talkers = await readFile(PATH);
   const talker = talkers.find((talkerData) => talkerData.id === Number(id));
   if (!talker) {
-    return res.status(404).send({ message: 'Pessoa palestrante não encontrada' });
+    return res.status(404).json({ message: 'Pessoa palestrante não encontrada' });
   }
-  return res.status(200).send(talker);
+  return res.status(200).json(talker);
 });
 
 app.listen(PORT, () => {
