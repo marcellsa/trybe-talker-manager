@@ -1,6 +1,8 @@
 const express = require('express');
 const crypto = require('crypto'); // fonte: nodejs.org/api/cryto.html
 const { readFile } = require('./utilities/fsUtilities');
+const { emailValidation } = require('./middlewares/emailValidation');
+const { passwordValidation } = require('./middlewares/passwordValidation');
 
 const PATH = './src/talker.json';
 
@@ -30,7 +32,7 @@ app.get('/talker/:id', async (req, res) => {
   return res.status(200).json(talker);
 });
 
-app.post('/login', async (req, res) => {
+app.post('/login', emailValidation, passwordValidation, async (_req, res) => {
   const token = await crypto.randomBytes(8).toString('hex');
   return res.status(200).json({ token: `${token}` });
 });
