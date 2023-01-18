@@ -52,7 +52,7 @@ app.post('/talker', tokenValidation, nameValidation, ageValidation,
   const newTalker = { id: database.length + 1, ...dataReq };
   database.push(newTalker);
   const newDatabase = JSON.stringify(database);
-  await writeFile(PATH, JSON.stringify(newDatabase));
+  await writeFile(PATH, newDatabase);
   return res.status(201).json(newTalker);
 });
 

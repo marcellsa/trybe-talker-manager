@@ -5,7 +5,7 @@ const isRateEmpty = (rate) => {
   return false;
 };
 
-const validateRate = (rate) => (rate > 0 && rate <= 5);
+const validateRate = (rate) => (Number.isInteger(rate) && rate > 0 && rate <= 5);
 
 const rateValidation = (req, res, next) => {
   const { talk } = req.body;
