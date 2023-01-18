@@ -1,8 +1,16 @@
 const express = require('express');
 const crypto = require('crypto'); // fonte: nodejs.org/api/cryto.html
-const { readFile } = require('./utilities/fsUtilities');
+
+const { readFile, writeFile } = require('./utilities/fsUtilities');
+
 const { emailValidation } = require('./middlewares/emailValidation');
 const { passwordValidation } = require('./middlewares/passwordValidation');
+const { tokenValidation } = require('./middlewares/tokenValidation');
+const { nameValidation } = require('./middlewares/nameValidation');
+const { ageValidation } = require('./middlewares/ageValidation');
+const { talkValidation } = require('./middlewares/talkValidation');
+const { watchedAtValidation } = require('./middlewares/watchedAtValidation');
+const { rateValidation } = require('./middlewares/rateValidation');
 
 const PATH = './src/talker.json';
 
@@ -35,6 +43,17 @@ app.get('/talker/:id', async (req, res) => {
 app.post('/login', emailValidation, passwordValidation, async (_req, res) => {
   const token = await crypto.randomBytes(8).toString('hex');
   return res.status(200).json({ token: `${token}` });
+});
+
+app.post('/talker', tokenValidation, nameValidation, ageValidation, 
+  talkValidation, watchedAtValidation, rateValidation, async (req, res) => {
+  const dataReq = req.body;
+  const database = await readFile(PATH);
+  const newTalker = { id: database.length + 1, ...dataReq };
+  database.push(newTalker);
+  const newDatabase = JSON.stringify(database);
+  await writeFile(PATH, JSON.stringify(newDatabase));
+  return res.status(201).json(newTalker);
 });
 
 app.listen(PORT, () => {

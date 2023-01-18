@@ -8,6 +8,15 @@ const readFile = async (path) => {
   }
 };
 
+const writeFile = async (path, data) => {
+  try {
+    return fs.writeFileSync(path, data);
+  } catch (error) {
+    return ({ message: error.message });
+  }
+};
+
 module.exports = {
   readFile,
+  writeFile,
 };
