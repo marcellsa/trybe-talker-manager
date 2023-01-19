@@ -25,7 +25,18 @@ app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
 });
 
-// requisito 8 aqui
+app.get('/talker/search', tokenValidation, async (req, res) => {
+  const { q } = req.query;
+  const database = await readFile(PATH);
+  const searchTalker = database.filter((talker) => talker.name.includes(q));
+  if (!q) {
+    return res.status(200).json(database);
+  }
+  if (!searchTalker) {
+    return res.status(200).json([]);
+  }
+  return res.status(200).json(searchTalker);
+});
 
 app.get('/talker', async (_req, res) => {
   const talkers = await readFile(PATH);
