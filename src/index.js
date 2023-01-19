@@ -77,6 +77,15 @@ talkValidation, watchedAtValidation, rateValidation, async (req, res) => {
   return res.status(200).json(talkerUpdate);
 });
 
+app.delete('/talker/:id', tokenValidation, async (req, res) => {
+  const { id } = req.params;
+  const database = await readFile(PATH);
+  const filterTalker = database.filter((talker) => talker.id !== Number(id));
+  const updateDatabase = JSON.stringify(filterTalker);
+  await writeFile(PATH, updateDatabase);
+  return res.status(204).json();
+});
+
 app.listen(PORT, () => {
   console.log('Online');
 });
