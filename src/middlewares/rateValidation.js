@@ -1,5 +1,5 @@
 const isRateEmpty = (rate) => {
-  if (!rate) {
+  if (!rate && rate !== 0) {
     return true;
   }
   return false;

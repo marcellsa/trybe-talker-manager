@@ -25,6 +25,8 @@ app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
 });
 
+// requisito 8 aqui
+
 app.get('/talker', async (_req, res) => {
   const talkers = await readFile(PATH);
   return res.status(200).json(talkers);
@@ -54,6 +56,25 @@ app.post('/talker', tokenValidation, nameValidation, ageValidation,
   const newDatabase = JSON.stringify(database);
   await writeFile(PATH, newDatabase);
   return res.status(201).json(newTalker);
+});
+
+// Esse requisito tive o suporte de Arthur Costa e André Gross
+app.put('/talker/:id', tokenValidation, nameValidation, ageValidation, 
+talkValidation, watchedAtValidation, rateValidation, async (req, res) => {
+  const { id } = req.params;
+  const { name, age, talk } = req.body;
+  const database = await readFile(PATH);
+  let talkerUpdate = {};
+  const talkerByID = await database.map((talker) => {
+    if (talker.id === Number(id)) {
+      talkerUpdate = { id: Number(id), name, age, talk };
+      return talkerUpdate;
+    }
+    return talker;
+  });
+  const updateDatabase = JSON.stringify(talkerByID);
+  await writeFile(PATH, updateDatabase);
+  return res.status(200).json(talkerUpdate);
 });
 
 app.listen(PORT, () => {
